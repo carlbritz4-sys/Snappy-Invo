@@ -1,11 +1,11 @@
 # Snappy Invo Landing Page
 
-Marketing landing page for Snappy Invo, built with React and Vite and prepared for Netlify deployment.
+Marketing landing page for Snappy Invo, built with React, Vite, and a Netlify Function for email delivery.
 
 ## Features
 
 - Responsive landing page matching the requested layout
-- Functional waitlist form powered by Netlify Forms
+- Functional waitlist form that sends signup emails through SMTP
 - Smooth in-page navigation and accessible form labels
 - Ready for GitHub push and Netlify hosting
 
@@ -26,8 +26,16 @@ npm run build
 
 1. Push this repo to GitHub.
 2. Import the repo into Netlify.
-3. Netlify will use `npm run build` and publish the `dist` folder from `netlify.toml`.
-4. After the first deploy, open the Netlify site dashboard.
-5. Go to `Forms`, confirm the `snappyinvo-waitlist` form is detected, and add an email notification to `snappyinvo@gmail.com`.
+3. Netlify will use `npm run build`, publish `dist`, and deploy the function in `netlify/functions`.
+4. Add these environment variables in Netlify:
 
-This project uses Netlify Forms for submissions, so email delivery to Gmail is configured inside Netlify rather than hard-coded in the frontend.
+```bash
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=465
+SMTP_USER=carlbritz4@gmail.com
+SMTP_PASS=your-gmail-app-password
+WAITLIST_FROM_EMAIL=carlbritz4@gmail.com
+WAITLIST_TO_EMAIL=Snappyinvo@gmail.com
+```
+
+Important: for Gmail SMTP, use a Google App Password, not your normal Gmail password.

@@ -26,12 +26,6 @@ const steps = [
   'Generate a beautiful PDF and share it instantly',
 ];
 
-function encodeForm(data) {
-  return Object.keys(data)
-    .map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(data[key])}`)
-    .join('&');
-}
-
 function BrandMark() {
   return (
     <div className="brand-mark" aria-hidden="true">
@@ -61,23 +55,21 @@ export default function App() {
     setMessage('');
 
     try {
-      const response = await fetch('/', {
+      const response = await fetch('/.netlify/functions/waitlist-signup', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
+          'Content-Type': 'application/json',
         },
-        body: encodeForm({
-          'form-name': 'snappyinvo-waitlist',
-          ...formData,
-        }),
+        body: JSON.stringify(formData),
       });
 
       if (!response.ok) {
-        throw new Error('Request failed');
+        const payload = await response.json().catch(() => ({}));
+        throw new Error(payload.error || 'Request failed');
       }
 
       setStatus('success');
-      setMessage("You're on the waitlist. We'll keep you posted.");
+      setMessage("You're on the waitlist. Your signup has been emailed successfully.");
       setFormData({
         name: '',
         email: '',
@@ -268,18 +260,8 @@ export default function App() {
 
             <form
               className="waitlist-form"
-              name="snappyinvo-waitlist"
               onSubmit={handleSubmit}
-              data-netlify="true"
-              netlify-honeypot="bot-field"
             >
-              <input type="hidden" name="form-name" value="snappyinvo-waitlist" />
-              <p className="hidden-field">
-                <label htmlFor="bot-field">
-                  Don&apos;t fill this out if you&apos;re human:
-                </label>
-                <input id="bot-field" name="bot-field" />
-              </p>
               <label className="sr-only" htmlFor="name">
                 Your name
               </label>
